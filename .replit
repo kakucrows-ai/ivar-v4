@@ -1,0 +1,53 @@
+run = ["bash", "main.sh"]
+
+entrypoint = "main.sh"
+modules = ["nodejs-20", "python-3.11"]
+
+[nix]
+channel = "stable-22_11"
+
+[deployment]
+run = ["bash", "main.sh"]
+
+[languages]
+
+[languages.bash]
+pattern = "**/{*.sh,*.bash}"
+
+[languages.bash.languageServer]
+start = "bash-language-server start"
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 2006
+externalPort = 80
+
+[[ports]]
+localPort = 3004
+externalPort = 3000
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "تشغيل البوت"
+
+[[workflows.workflow]]
+name = "تشغيل البوت"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node bot.cjs"
+
+[agent]
+expertMode = true
